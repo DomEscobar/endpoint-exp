@@ -30,7 +30,7 @@ Structure it like that:
 
 When you are finished with your goal, write **DONE** as last step.
 
-Firstly you need to install all neccassary nodejs packages that you use in your code by using shell **npm i... **, expect ${preInstalledPackages}.
+Firstly you need to install all neccassary nodejs packages that you use in your code by using shell **npm i ...**, expect **${preInstalledPackages}**.
 If you want to send data between different programming languages, save the data to a txt or json. 
 
 Make 3 steps now, we will add more steps later if neccaesary.
