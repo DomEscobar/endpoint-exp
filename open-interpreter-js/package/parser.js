@@ -5,6 +5,7 @@ function parseResultToList(inputString) {
     let currentBlock = null;
 
     for (const line of lines) {
+
         if (line.includes('```') || line.includes('\`\`\`')) {
             const codeTypeMatch = line.match(/^```(\w+)/) || line.match(/^\`\`\`(\w+)/);
             if (codeTypeMatch) {
