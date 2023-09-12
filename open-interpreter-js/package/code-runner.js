@@ -1,19 +1,19 @@
 
 const { spawn } = require('child_process');
-const globalState = {};
+let globalState = {};
 
 
-async function executeNodeCodeEval(code) {
+async function executeNodeCodeEval(code, {}) {
     return new Promise(async (resolve, reject) => {
         try {
 
             const cheerio = require('cheerio');
+            const Puppeteer = require('puppeteer');
             const puppeteer = require('puppeteer');
             const axios = require('axios');
             const fs = require('fs');
 
-            const state = globalState;
-
+            let state = globalState;
 
             const asyncCode = `
             (async () => {
@@ -22,8 +22,8 @@ async function executeNodeCodeEval(code) {
             )();
             `;
 
-            await eval(asyncCode);
-            resolve("");
+            const res = await eval(asyncCode);
+            resolve(res);
         } catch (error) {
             console.error('Error executing code:', error);
             reject(error);
@@ -50,11 +50,6 @@ const runShell = (command, timeout = 300000) => {
         }, timeout);
     });
 };
-
-function getFirstErrorLine(error) {
-    const lines = error.split('\n');
-    return lines[0].trim();
-}
 
 function removeComments(txt) {
     let lines = txt.split('\n');

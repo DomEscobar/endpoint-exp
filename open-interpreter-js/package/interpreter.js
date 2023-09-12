@@ -33,7 +33,7 @@ class Interpreter {
 
     async execute(input, isInitial = true) {
         try {
-            const prompt = isInitial ? promptTemplate + input : input;
+            const prompt = isInitial ? promptTemplate.replace("{GOAL}", input) : input;
             const res = await this.llm.execute(prompt);
             const parsed = await this.parseResult(res.response);
             await this.proceedResult(parsed);
@@ -49,7 +49,11 @@ class Interpreter {
     async proceedResult(parsed) {
         try {
             let isDone = false;
+            let lastValue = {};
             for (let parsedItem of parsed) {
+
+
+                this.llm.addHuman("Im executing now : " + parsedItem.txt);
 
                 if (parsedItem.isText) {
 
@@ -77,7 +81,7 @@ class Interpreter {
                         console.log(parsedItem.txt);
                     }
 
-                    await executeNodeCodeEval(parsedItem.txt);
+                    lastValue = await executeNodeCodeEval(parsedItem.txt, lastValue ?? {});
                 }
 
                 if (parsedItem.txt.includes('DONE')) {

@@ -1,7 +1,7 @@
 const { OpenAI } = require("langchain/llms/openai");
-const { BufferMemory, ChatMessageHistory, BufferWindowMemory } = require("langchain/memory");
+const { ChatMessageHistory, BufferMemory } = require("langchain/memory");
 const { ConversationChain } = require("langchain/chains");
-const { AIMessage, SystemMessage } = require("langchain/schema");
+const { AIMessage, SystemMessage, HumanMessage } = require("langchain/schema");
 
 class LangChainLLM {
     constructor(options = { apiKey, modelName: "gpt-3.5-turbo", maxHistory: 7 }) {
@@ -11,8 +11,8 @@ class LangChainLLM {
             modelName: options.modelName,
             openAIApiKey: options.apiKey,
         });
-        this.memory = new BufferWindowMemory({ size: 7 });
-        this.chain = new ConversationChain({ llm: this.model, memory: this.memory, verbose: true });
+        this.memory = new BufferMemory();
+        this.chain = new ConversationChain({ llm: this.model, memory: this.memory });
         this.initalPrompt = null;
     }
 
@@ -38,16 +38,20 @@ class LangChainLLM {
         this.addMessage(new AIMessage({ content: message }));
     }
 
+    addHuman(message) {
+        this.addMessage(new HumanMessage({ content: message }));
+    }
+
     addMessage(message) {
         this.history.push(message);
         this.memory.chatHistory.addMessage(message);
         this.removeLatestOnOverflow();
     }
 
-    removeLatestOnOverflow() {
+    async removeLatestOnOverflow() {
         if (this.history.length > this.maxHistory) {
             this.history.shift();
-            this.memory.chatHistory.clear();
+            await this.memory.chatHistory.clear();
             this.memory.chatHistory = new ChatMessageHistory([this.initalPrompt, ...this.history])
         }
     }

@@ -22,7 +22,7 @@ function parseResultToList(inputString) {
                 } else {
                     currentBlock = {
                         isText: false,
-                        codeType: "javascript",
+                        codeType: "nodejs",
                         txt: ''
                     };
                 }
